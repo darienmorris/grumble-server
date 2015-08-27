@@ -1,6 +1,6 @@
 var Hapi = require('hapi');
 var pg = require('pg');
-
+var config = require(__dirname + '/config/development');
 // app.get('/db', function (request, response) {
 //   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 //     client.query('SELECT * FROM test_table', function(err, result) {
@@ -38,7 +38,25 @@ server.route({
     method: 'GET',
     path:'/hello', 
     handler: function (request, reply) {
-       reply('hello world');
+        var conString = "postgres://"+config.db.sql.user+":"+config.db.sql.password+"@"+config.db.sql.server+"/"+config.db.sql.database+'?ssl=true';
+        pg.connect(conString, function(err, client, done) {
+            if(err) {
+            }
+            else {
+                client.query('SELECT * FROM users', function(err, result) {
+                    //call `done()` to release the client back to the pool 
+                    done();
+
+                    if(err) {
+                        console.log("there is an error", err);
+                      // return console.error('error running query', err);
+                    }
+
+                    reply(result.rows);
+                });
+            }
+          
+        });
     }
 });
 

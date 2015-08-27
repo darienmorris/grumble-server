@@ -7,4 +7,6 @@ config.db = {
 	redis: {
 	
 	}
-}
+};
+
+module.exports = config;
