@@ -1,17 +1,8 @@
 var Hapi = require('hapi');
 var pg = require('pg');
+var _ = require('lodash');
 var config = require(__dirname + '/config/development');
-// app.get('/db', function (request, response) {
-//   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-//     client.query('SELECT * FROM test_table', function(err, result) {
-//       done();
-//       if (err)
-//        { console.error(err); response.send("Error " + err); }
-//       else
-//        { response.render('pages/db', {results: result.rows} ); }
-//     });
-//   });
-// })
+var User = require(__dirname + '/dist/entity/user');
 
 // Create a server with a host and port
 var server = new Hapi.Server();
@@ -36,27 +27,17 @@ io.on('connection', function(socket) {
 // Add the route
 server.route({
     method: 'GET',
-    path:'/hello', 
+    path:'/user/login', 
     handler: function (request, reply) {
-        var conString = "postgres://"+config.db.sql.user+":"+config.db.sql.password+"@"+config.db.sql.server+"/"+config.db.sql.database+'?ssl=true';
-        pg.connect(conString, function(err, client, done) {
-            if(err) {
-            }
-            else {
-                client.query('SELECT * FROM users', function(err, result) {
-                    //call `done()` to release the client back to the pool 
-                    done();
+        reply(User.login());
+    }
+});
 
-                    if(err) {
-                        console.log("there is an error", err);
-                      // return console.error('error running query', err);
-                    }
-
-                    reply(result.rows);
-                });
-            }
-          
-        });
+server.route({
+    method: 'POST',
+    path:'/user/register',
+    handler: function(request, reply) {
+        reply(User.register());
     }
 });
 
