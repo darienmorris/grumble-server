@@ -8,6 +8,7 @@ config.db = {
 		port: 5432,
 		database: "d6dolfm9itabeu",
 		pool: {}
+
 	},
 	redis: {
 	

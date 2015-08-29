@@ -29,12 +29,12 @@ server.route({
     method: 'GET',
     path:'/user/login', 
     handler: function (request, reply) {
-        reply(User.login());
+        reply(User.login({username:'darien.morris', password:'test'}));
     }
 });
 
 server.route({
-    method: 'POST',
+    method: 'GET',
     path:'/user/register',
     handler: function(request, reply) {
         reply(User.register());
