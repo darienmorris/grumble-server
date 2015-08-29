@@ -32,13 +32,13 @@ class User {
 		}
 
 
-		//TODO: do something better about this connection string
+		// //TODO: do something better about this connection string
 		var conString = "postgres://"+config.db.sql.user+":"+config.db.sql.password+"@"+config.db.sql.server+"/"+config.db.sql.database+'?ssl=true';
         pg.connect(conString, function(err, client, done) {
             if(err) {
             }
             
-            client.query('SELECT * FROM users WHERE username = $1', [user.username] function(err, result) {
+            client.query('SELECT * FROM users WHERE username = $1', [user.username], function(err, result) {
                 done();
 
                 if(err) {

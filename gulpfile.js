@@ -6,3 +6,11 @@ gulp.task("default", function () {
     .pipe(babel())
     .pipe(gulp.dest("dist"));
 });
+
+
+// Watcher
+//-----------------------------------------------------------------
+ 
+gulp.task('watch', ['default'], function () {
+ 	gulp.watch(['src/**'], ['default']);
+});
