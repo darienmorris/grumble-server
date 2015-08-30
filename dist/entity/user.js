@@ -17,10 +17,7 @@ var User = (function () {
 
 	_createClass(User, null, [{
 		key: 'register',
-		value: function register(user) {
-			//TODO: remove test data
-			user = { name: 'Darien Morris', username: 'darien.morris', password: 'test' };
-
+		value: function register(user, callback) {
 			//TODO: throw an error
 			if (!user.name || !user.username || !user.password) {}
 
@@ -29,8 +26,10 @@ var User = (function () {
 					DB.query('INSERT INTO users (name, username, password) VALUES ($1, $2, $3)', [user.name, user.username, hash], function (err, result) {
 
 						if (err) {
-							console.log("there is an error", err);
+							callback(err);
 						}
+
+						callback(null);
 					});
 				});
 			});
@@ -38,19 +37,17 @@ var User = (function () {
 	}, {
 		key: 'validatePassword',
 		value: function validatePassword(password, hash, callback) {
-			console.log("validating " + password + " against " + hash);
 			bcrypt.compare(password, hash, function (err, res) {
 				if (err) {
 					console.log(err);
 				}
-				console.log(res);
+
+				callback(err, res);
 			});
 		}
 	}, {
 		key: 'login',
-		value: function login(user) {
-			console.log(user);
-
+		value: function login(user, callback) {
 			//TODO: throw error
 			if (!user.username || !user.password) {
 				return "bad data";
@@ -66,11 +63,14 @@ var User = (function () {
 					return;
 				}
 
-				User.validatePassword(user.password, result.rows[0].password, function (err, result) {
+				User.validatePassword(user.password, result.rows[0].password, function (err, success) {
 					if (err) {}
 
 					//create a session token and send back user data
-					return "great success";
+					callback(null, {
+						user: result.rows[0],
+						token: 'potato'
+					});
 				});
 			});
 		}

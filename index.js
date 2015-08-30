@@ -26,18 +26,22 @@ io.on('connection', function(socket) {
 
 // Add the route
 server.route({
-    method: 'GET',
+    method: 'POST',
     path:'/user/login', 
     handler: function (request, reply) {
-        reply(User.login({username:'darien.morris', password:'test'}));
+        User.login(request.payload, function(err, result) {
+            reply(result);
+        });
     }
 });
 
 server.route({
-    method: 'GET',
+    method: 'POST',
     path:'/user/register',
     handler: function(request, reply) {
-        reply(User.register());
+        User.register(request.payload, function(err, result) {
+            reply(result);
+        });
     }
 });
 
