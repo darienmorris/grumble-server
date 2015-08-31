@@ -30,7 +30,11 @@ server.route({
     path:'/user/login', 
     handler: function (request, reply) {
         User.login(request.payload, function(err, result) {
-            reply(result);
+            if(err) {
+                return reply(err);
+            }
+
+            return reply(result);
         });
     }
 });
@@ -40,7 +44,11 @@ server.route({
     path:'/user/register',
     handler: function(request, reply) {
         User.register(request.payload, function(err, result) {
-            reply(result);
+            if(err) {
+                return reply(err);
+            }
+
+            return reply(result);
         });
     }
 });

@@ -1,5 +1,7 @@
 var _ = require('lodash');
 var bcrypt = require('bcrypt');
+var Boom = require('boom');
+
 var DB = require(__dirname+'/../data/db');
 
 class User {
@@ -10,6 +12,7 @@ class User {
 	static register(user, callback) {
 		//TODO: throw an error
 		if(!user.name || !user.username || !user.password) {
+			return callback(Boom.badData("bad data for required parameters"));
 		}
 
 		bcrypt.genSalt(10, function(err, salt) {
@@ -17,7 +20,7 @@ class User {
 		    	DB.query('INSERT INTO users (name, username, password) VALUES ($1, $2, $3)',[user.name, user.username, hash], function(err, result) {
 					
 					if(err) {
-						callback(err);
+						return callback(Boom.wrap(err, 500));
 		            }
 
 		            callback(null);
@@ -30,7 +33,7 @@ class User {
 	static validatePassword(password, hash, callback) {
 		bcrypt.compare(password, hash, function(err, res) {
 			if(err) {
-				console.log(err);
+				return callback(Boom.wrap(err,500));
 			}
 
 			callback(err, res);
@@ -45,19 +48,21 @@ class User {
 
 		DB.query('SELECT * FROM users WHERE username = $1',[user.username],function(err, result) {
 			if(err) {
-                console.log("there is an error", err);
+				return callback(Boom.wrap(err, 500));
             }
 
             if(result.rows.length == 0) {
-            	console.log("no results!");
-            	return;
+            	return callback(Boom.notFound());
             }
 
         	User.validatePassword(user.password, result.rows[0].password, function(err, success) {
         		if(err) {
-
+        			return callback(Boom.wrap(err,500));
         		}
 
+        		if(!success) {
+        			return callback(Boom.unauthorized("invalid credentials"));
+        		}
         		//create a session token and send back user data
         		callback(null, {
         			user: result.rows[0],
