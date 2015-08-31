@@ -3,6 +3,8 @@ var bcrypt = require('bcrypt');
 var Boom = require('boom');
 
 var DB = require(__dirname+'/../data/db');
+var Session = require(__dirname+'/session');
+
 
 class User {
 	constructor(userID) {
@@ -66,22 +68,11 @@ class User {
         		//TODO: create token and store it somewhere for next validation
         		callback(null, {
         			user: result.rows[0],
-        			token: User.generateToken()
+        			token: Session.generateToken()
         		});
 			});
 		});
 	}
-
-	static generateToken() {
-	    var d = Date.now();
-	    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-	        var r = (d + Math.random()*16)%16 | 0;
-	        d = Math.floor(d/16);
-	        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-	    });
-	    return uuid;
-	}
-
 }
 
 module.exports = User;
