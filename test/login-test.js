@@ -13,6 +13,7 @@ describe("Testing login...", function() {
 			assert.equal(200, res.statusCode);
 			
 			var data = JSON.parse(body);
+			console.log(data);
 			assert.ok(data.token);
 			done();
 		});

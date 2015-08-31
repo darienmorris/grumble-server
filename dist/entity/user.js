@@ -20,7 +20,6 @@ var User = (function () {
 	_createClass(User, null, [{
 		key: 'register',
 		value: function register(user, callback) {
-			//TODO: throw an error
 			if (!user.name || !user.username || !user.password) {
 				return callback(Boom.badData("bad data for required parameters"));
 			}
@@ -78,10 +77,21 @@ var User = (function () {
 					//TODO: create token and store it somewhere for next validation
 					callback(null, {
 						user: result.rows[0],
-						token: 'potato'
+						token: User.generateToken()
 					});
 				});
 			});
+		}
+	}, {
+		key: 'generateToken',
+		value: function generateToken() {
+			var d = Date.now();
+			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+				var r = (d + Math.random() * 16) % 16 | 0;
+				d = Math.floor(d / 16);
+				return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
+			});
+			return uuid;
 		}
 	}]);
 
