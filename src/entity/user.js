@@ -41,9 +41,8 @@ class User {
 	}
 
 	static login(user, callback) {
-		//TODO: throw error
 		if(!user.username || !user.password) {
-			return "bad data";
+			return callback(Boom.badData("bad data for required parameters"));
 		}
 
 		DB.query('SELECT * FROM users WHERE username = $1',[user.username],function(err, result) {
@@ -63,7 +62,9 @@ class User {
         		if(!success) {
         			return callback(Boom.unauthorized("invalid credentials"));
         		}
+        		
         		//create a session token and send back user data
+        		//TODO: create token and store it somewhere for next validation
         		callback(null, {
         			user: result.rows[0],
         			token: 'potato'

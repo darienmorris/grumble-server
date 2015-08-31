@@ -43,4 +43,17 @@ describe("Testing login...", function() {
 			done();
 		});
 	});
+
+	it("should return a 422 when leaving out parameters", function(done) {
+		var credentials = {username:'darien.morris@gmail.com'};
+
+		request({
+			url: 'http://localhost:8000/user/login',
+			method: 'post',
+			form: credentials,
+		}, function(err, res, body) {
+			assert.equal(422, res.statusCode);
+			done();
+		});
+	});
 });
