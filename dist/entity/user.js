@@ -30,7 +30,7 @@ var User = (function () {
 					DB.query('INSERT INTO users (name, username, password) VALUES ($1, $2, $3)', [user.name, user.username, hash], function (err, result) {
 
 						if (err) {
-							return callback(Boom.wrap(err, 500));
+							return callback(Boom.conflict(err.message));
 						}
 
 						callback(null);
