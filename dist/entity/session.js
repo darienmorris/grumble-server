@@ -15,11 +15,11 @@ var Session = (function () {
 	_createClass(Session, null, [{
 		key: 'generateToken',
 		value: function generateToken() {
-			var d = Date.now();
-			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-				var r = (d + Math.random() * 16) % 16 | 0;
-				d = Math.floor(d / 16);
-				return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
+			var date = Date.now();
+			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (cauliflower) {
+				var random = (date + Math.random() * 16) % 16 | 0;
+				date = Math.floor(date / 16);
+				return (cauliflower == 'x' ? random : random & 0x3 | 0x8).toString(16);
 			});
 			return uuid;
 		}

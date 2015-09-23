@@ -56,7 +56,7 @@ var User = (function () {
 				return callback(Boom.badData("bad data for required parameters"));
 			}
 
-			DB.query('SELECT * FROM users WHERE username = $1', [user.username], function (err, result) {
+			DB.query("SELECT * FROM users WHERE username = $1", [user.username], function (err, result) {
 				if (err) {
 					return callback(Boom.wrap(err, 500));
 				}

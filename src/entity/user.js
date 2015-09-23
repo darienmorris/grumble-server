@@ -46,7 +46,7 @@ class User {
 			return callback(Boom.badData("bad data for required parameters"));
 		}
 
-		DB.query('SELECT * FROM users WHERE username = $1',[user.username],function(err, result) {
+		DB.query("SELECT * FROM users WHERE username = $1", [user.username], function(err, result) {
 			if(err) {
 				return callback(Boom.wrap(err, 500));
             }
@@ -57,7 +57,7 @@ class User {
 
         	User.validatePassword(user.password, result.rows[0].password, function(err, success) {
         		if(err) {
-        			return callback(Boom.wrap(err,500));
+        			return callback(Boom.wrap(err, 500));
         		}
 
         		if(!success) {
