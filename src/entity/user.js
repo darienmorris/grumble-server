@@ -1,3 +1,8 @@
+/*
+* The User class performs any account management functions for players.
+* A good rule of thumb is that if it affects gameplay in any way, it doesn't belong here.
+*/
+
 var _ = require('lodash');
 var bcrypt = require('bcrypt');
 var Boom = require('boom');
