@@ -11,7 +11,9 @@ config.db = {
 
 	},
 	redis: {
-	
+		password: "Burningstar4",
+		server: "pub-redis-10111.us-east-1-4.6.ec2.redislabs.com",
+		port: 10111
 	}
 };
 
