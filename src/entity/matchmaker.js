@@ -1,24 +1,37 @@
 var _ = require('lodash');
 var Boom = require('boom');
-var cache = require(__dirname+'/../data/cache');
+var Cache = require(__dirname+'/../data/cache');
 
 
 class MatchMaker {
-
-	static generateToken() {
-	    var date = Date.now();
-	    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(cauliflower) {
-	        var random = (date + Math.random()*16)%16 | 0;
-	        date = Math.floor(date/16);
-	        return (cauliflower=='x' ? random : (random&0x3|0x8)).toString(16);
-	    });
-	    return uuid;
+	constructor() {
+		this.cache = new Cache();
+	}
+	
+	joinQuickMatch(userID) {
+		this.addToQueue(userID, MatchMaker.QUICK_MATCH);
+		this.lookForMatches(MatchMaker.QUICK_MATCH);
 	}
 
-	static validateToken(userID, token) {
-		// Compares the token parameter with the stored token
+	addToQueue(userID, gameType) {
+		this.cache.hset(gameType, userID, JSON.Stringify({userID:userID}));
+
 	}
 
+	removeFromQueue(userID, gameType) {
+
+	}
+
+	getUsersInQueue(gameType) {
+
+	}
+
+	lookForMatches(gameType) {
+		var users = getUsersInQueue(gameType);
+		
+	}
 }
+
+MatchMaker.QUICK_MATCH = "quick-match";
 
 module.exports = MatchMaker;

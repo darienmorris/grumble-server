@@ -6,32 +6,42 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _ = require('lodash');
 var Boom = require('boom');
-var cache = require(__dirname + '/../data/cache');
+var Cache = require(__dirname + '/../data/cache');
 
 var MatchMaker = (function () {
 	function MatchMaker() {
 		_classCallCheck(this, MatchMaker);
+
+		this.cache = new Cache();
 	}
 
-	_createClass(MatchMaker, null, [{
-		key: 'generateToken',
-		value: function generateToken() {
-			var date = Date.now();
-			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (cauliflower) {
-				var random = (date + Math.random() * 16) % 16 | 0;
-				date = Math.floor(date / 16);
-				return (cauliflower == 'x' ? random : random & 0x3 | 0x8).toString(16);
-			});
-			return uuid;
+	_createClass(MatchMaker, [{
+		key: 'joinQuickMatch',
+		value: function joinQuickMatch(userID) {
+			this.addToQueue(userID, MatchMaker.QUICK_MATCH);
+			this.lookForMatches(MatchMaker.QUICK_MATCH);
 		}
 	}, {
-		key: 'validateToken',
-		value: function validateToken(userID, token) {
-			// Compares the token parameter with the stored token
+		key: 'addToQueue',
+		value: function addToQueue(userID, gameType) {
+			this.cache.hset(gameType, userID, JSON.Stringify({ userID: userID }));
+		}
+	}, {
+		key: 'removeFromQueue',
+		value: function removeFromQueue(userID, gameType) {}
+	}, {
+		key: 'getUsersInQueue',
+		value: function getUsersInQueue(gameType) {}
+	}, {
+		key: 'lookForMatches',
+		value: function lookForMatches(gameType) {
+			var users = getUsersInQueue(gameType);
 		}
 	}]);
 
 	return MatchMaker;
 })();
+
+MatchMaker.QUICK_MATCH = "quick-match";
 
 module.exports = MatchMaker;
