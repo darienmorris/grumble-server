@@ -1,3 +1,4 @@
+var fs = require('fs');
 var Hapi = require('hapi');
 var pg = require('pg');
 var config = require(__dirname + '/config/development');
@@ -56,6 +57,20 @@ server.route({
                 });
             }
           
+        });
+    }
+});
+
+// this route is for testing the battle class
+server.route({
+    method: 'GET',
+    path:'/battle', 
+    handler: function (request, reply) {
+        fs.readFile(__dirname + "/html/battle.html", "utf8", function (err,data) {
+            if (err) {
+                return console.log(err);
+            }
+            reply(data);
         });
     }
 });
