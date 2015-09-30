@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var redis = require('redis');
-var config = require(__dirname + '/../../config/development');
+var redis = require("redis");
+var config = require(__dirname + "/../../config/development");
 
 var Cache = function Cache(callback) {
 	_classCallCheck(this, Cache);

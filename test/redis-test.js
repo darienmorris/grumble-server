@@ -1,9 +1,9 @@
-var request = require('request');
-var assert = require('assert');
-var redis = require('redis');
-var Cache = require(__dirname + '/../dist/data/cache');
-var MatchMaker = require(__dirname + '/../dist/entity/matchmaker');
-var config = require(__dirname + '/../config/development');
+var request = require("request");
+var assert = require("assert");
+var redis = require("redis");
+var Cache = require(__dirname + "/../dist/data/cache");
+var MatchMaker = require(__dirname + "/../dist/entity/matchmaker");
+var config = require(__dirname + "/../config/development");
 
 
 describe("Testing redis...", function() {

@@ -1,5 +1,5 @@
-var redis = require('redis');
-var config = require(__dirname + '/../../config/development');
+var redis = require("redis");
+var config = require(__dirname + "/../../config/development");
 
 class Cache {
 	constructor(callback) {

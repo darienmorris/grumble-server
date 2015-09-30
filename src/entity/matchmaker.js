@@ -1,6 +1,7 @@
-var _ = require('lodash');
-var Boom = require('boom');
-var Cache = require(__dirname+'/../data/cache');
+var _ = require("lodash");
+var Boom = require("boom");
+var Cache = require(__dirname+"/../data/cache");
+var User = require(__dirname+"/user");
 
 
 class MatchMaker {
@@ -8,9 +9,10 @@ class MatchMaker {
 		this.cache = new Cache();
 	}
 	
-	joinQuickMatch(userID) {
-		this.addToQueue(userID, MatchMaker.QUICK_MATCH);
-		this.lookForMatches(MatchMaker.QUICK_MATCH);
+	joinQuickMatch(userID, callback) {
+		let ranking = User.getRanking(userID);
+		this.addToQueue(userID, ranking, MatchMaker.QUICK_MATCH);
+		this.lookForMatches(userID, MatchMaker.QUICK_MATCH, callback);
 	}
 
 	addToQueue(userID, gameType) {
@@ -26,8 +28,8 @@ class MatchMaker {
 
 	}
 
-	lookForMatches(gameType) {
-		var users = getUsersInQueue(gameType);
+	lookForMatches(userID, gameType) {
+		var users = this.getUsersInQueue(gameType);
 		
 	}
 }
