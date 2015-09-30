@@ -2,6 +2,7 @@ var fs = require('fs');
 var Hapi = require('hapi');
 var pg = require('pg');
 var config = require(__dirname + '/config/development');
+var Battle = require(__dirname + "/dist/entity/battle");
 // app.get('/db', function (request, response) {
 //   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 //     client.query('SELECT * FROM test_table', function(err, result) {
@@ -70,6 +71,7 @@ server.route({
             if (err) {
                 return console.log(err);
             }
+            new Battle(["12345", "67554"]);
             reply(data);
         });
     }
