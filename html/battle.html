@@ -46,6 +46,7 @@
 	<ul id="chat"></ul>
 
 	<textarea id="chat-box" rows="3"></textarea>
+	<button id="end-turn">End turn</button>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 	<script type="text/javascript">
@@ -66,7 +67,7 @@
 				}
 				if(e.keyCode == 13 && canSend){
 					var $el = e.target;
-					socket.emit("send message", { id: id, message: $el.value });
+					socket.emit("send message", $el.value);
 					$el.value = "";
 					$el.setSelectionRange(0,0);
 					e.preventDefault();
@@ -80,8 +81,16 @@
 				}
 			});
 
+			$("#end-turn").addEventListener("click", function(){
+				socket.emit("end turn");
+			});
+
 			socket.on("player count", function(count){
 				$("#player-count").innerText = count;
+			});
+
+			socket.on(id + " not your turn", function(){
+				alert("It is not your turn right now!");
 			});
 
 			socket.on("send message", function(message){
