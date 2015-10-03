@@ -2,10 +2,100 @@
 <html>
 <head>
 	<title>Battle!</title>
+	<style type="text/css">
+		* {
+			box-sizing: inherit;
+		}
+
+		body {
+			box-sizing: border-box;
+			background-color: #efefef;
+		}
+
+		#chat-box {
+			width: 100%;
+			padding: 10px;
+			background-color: #fff;
+		}
+
+		#chat {
+			min-height: 300px;
+			margin: 10px 0;
+			padding: 10px;
+			background-color: #fff;
+		}
+
+		#chat li {
+			list-style: none;
+			padding: 0;
+			margin-bottom: 10px;
+		}
+
+		#chat li:last-child {
+			margin-bottom: 0;
+		}
+
+		.text-center {
+			text-align: center;
+		}
+	</style>
 </head>
 <body>
 	<h1>Battle!</h1>
+	<div class="text-center">Players: <span id="player-count"></span></div>
+	<ul id="chat"></ul>
+
+	<textarea id="chat-box" rows="3"></textarea>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+	<script type="text/javascript">
+		(function(){
+			var $ = function(selection){
+				var nodes = document.querySelectorAll(selection) || [null];
+				return nodes.length > 1 ? nodes : nodes[0];
+			};
+			var id = Math.round(Math.random() * 9000) + 10000;
+			var socket = io();
+			var canSend = true;
+
+			socket.emit("player id", id);
+
+			$("#chat-box").addEventListener("keydown", function(e){
+				if(e.keyCode == 16){
+					canSend = false;
+				}
+				if(e.keyCode == 13 && canSend){
+					var $el = e.target;
+					socket.emit("send message", { id: id, message: $el.value });
+					$el.value = "";
+					$el.setSelectionRange(0,0);
+					e.preventDefault();
+					return false;
+				}
+			});
+
+			$("#chat-box").addEventListener("keyup", function(e){
+				if(e.keyCode == 16){
+					canSend = true;
+				}
+			});
+
+			socket.on("player count", function(count){
+				$("#player-count").innerText = count;
+			});
+
+			socket.on("send message", function(message){
+				console.log(message);
+				$("#chat").appendChild(renderMessage(message));
+			});
+
+			function renderMessage(message){
+				var $li = document.createElement("li"),
+					$text = document.createTextNode(message);
+				$li.appendChild($text);
+				return $li;
+			}
+		})();
+	</script>
 </body>
 </html>

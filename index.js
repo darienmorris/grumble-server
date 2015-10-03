@@ -25,7 +25,7 @@ server.connection({
 
 var io = require('socket.io')(server.select('api').listener);
 
-io.on('connection', function(socket) {
+/*io.on('connection', function(socket) {
 	console.log("connection!");
 	socket.emit('A user connected');
 
@@ -33,7 +33,7 @@ io.on('connection', function(socket) {
 		io.emit('typing', message);
 	});
 
-});
+});*/
 
 // Add the route
 server.route({
@@ -62,6 +62,7 @@ server.route({
     }
 });
 
+var battle;
 // this route is for testing the battle class
 server.route({
     method: 'GET',
@@ -71,7 +72,7 @@ server.route({
             if (err) {
                 return console.log(err);
             }
-            new Battle(["12345", "67554"]);
+            battle = battle || new Battle(io, ["12345", "67554"]);
             reply(data);
         });
     }
