@@ -33,11 +33,15 @@ var MatchMaker = (function () {
 		value: function removeFromQueue(userID, gameType) {}
 	}, {
 		key: "getUsersInQueue",
-		value: function getUsersInQueue(gameType) {}
+		value: function getUsersInQueue(gameType, callback) {
+			client.hgetall(gameType, callback);
+		}
 	}, {
 		key: "lookForMatches",
 		value: function lookForMatches(userID, gameType) {
-			var users = this.getUsersInQueue(gameType);
+			this.getUsersInQueue(gameType, function (err, users) {
+				console.log(users);
+			});
 		}
 	}]);
 

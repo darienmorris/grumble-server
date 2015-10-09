@@ -24,12 +24,14 @@ class MatchMaker {
 
 	}
 
-	getUsersInQueue(gameType) {
-
+	getUsersInQueue(gameType, callback) {
+		client.hgetall(gameType, callback);
 	}
 
 	lookForMatches(userID, gameType) {
-		var users = this.getUsersInQueue(gameType);
+		this.getUsersInQueue(gameType, function(err, users) {
+			console.log(users);
+		});
 		
 	}
 }
