@@ -4,33 +4,33 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var pg = require('pg');
-var config = require(__dirname + '/../../config/development');
+var _ = require('lodash');
+var Boom = require('boom');
 
-var DB = (function () {
-	function DB() {
-		_classCallCheck(this, DB);
+var Session = (function () {
+	function Session() {
+		_classCallCheck(this, Session);
 	}
 
-	_createClass(DB, null, [{
-		key: 'query',
-		value: function query(_query, values, callback) {
-			var conString = "postgres://" + config.db.sql.user + ":" + config.db.sql.password + "@" + config.db.sql.server + "/" + config.db.sql.database + '?ssl=true';
-
-			pg.connect(conString, function (err, client, done) {
-				if (err) {
-					console.log(err);
-				}
-
-				client.query(_query, values, function (err, result) {
-					done();
-					callback(err, result);
-				});
+	_createClass(Session, null, [{
+		key: 'generateToken',
+		value: function generateToken() {
+			var date = Date.now();
+			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (cauliflower) {
+				var random = (date + Math.random() * 16) % 16 | 0;
+				date = Math.floor(date / 16);
+				return (cauliflower == 'x' ? random : random & 0x3 | 0x8).toString(16);
 			});
+			return uuid;
+		}
+	}, {
+		key: 'validateToken',
+		value: function validateToken(userID, token) {
+			// Compares the token parameter with the stored token
 		}
 	}]);
 
-	return DB;
+	return Session;
 })();
 
-module.exports = DB;
+module.exports = Session;

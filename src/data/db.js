@@ -1,25 +1,21 @@
 var pg = require('pg');
+var config = require(__dirname + '/../../config/development');
 
-function DB(options) {
-	var conString = "postgres://"+config.db.sql.user+":"+config.db.sql.password+"@"+config.db.sql.server+"/"+config.db.sql.database;
-	this.connect(conString);
-}
+class DB {
+	static query(query, values, callback) {
+		var conString = "postgres://"+config.db.sql.user+":"+config.db.sql.password+"@"+config.db.sql.server+"/"+config.db.sql.database+'?ssl=true';
 
-DB.prototype.connect = function(conString) {
-	pg.connect(conString, function(err, client, done) {
-		if(err) {
-			return console.error('error fetching client from pool', err);
-		}
-		
-		client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-		//call `done()` to release the client back to the pool 
-		done();
+		pg.connect(conString, function(err, client, done) {
+			if(err) {
+				console.log(err);
+			}
 
-		if(err) {
-		  return console.error('error running query', err);
-		}
-		console.log(result.rows[0].number);
-		//output: 1 
+			client.query(query, values, function(err, result) {
+			  done();
+			  callback(err, result);
+			})
 		});
-	});
+	}
 }
+
+module.exports = DB;
