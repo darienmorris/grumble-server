@@ -11,6 +11,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var _ = require("lodash"),
     User = require(__dirname + "/user");
 
+// TODO: Investigate socket rooms and emitting events within that room
+// TODO: Investigate emitting events to a single user
+
 var Battle = (function () {
 	function Battle(io, userIDs) {
 		_classCallCheck(this, Battle);
@@ -25,7 +28,7 @@ var Battle = (function () {
 
 		// Create a socket connection with both players (once connection for each)
 		// Should the player class handle this??
-		this.connectPlayers();
+		this.onPlayerConnect();
 
 		console.log(" ");
 	}
@@ -40,36 +43,23 @@ var Battle = (function () {
 
 				// Todo: when Player class is created, instantiate player here
 				// this.players.push(new Player(id));
-				// this.players.push(id);
 			}).bind(this));
-		}
-	}, {
-		key: "establishTurnOrder",
-		value: function establishTurnOrder() {
-			if (!this.battleStarted) {
-				console.log("establish turn order");
-				this.turn = {};
-				this.turn.first = this.players[_.random(0, this.players.length - 1)];
-				this.turn.now = this.turn.first;
-				this.battleStarted = true;
-			}
 		}
 	}, {
 		key: "toggleTurn",
 		value: function toggleTurn(playerID) {
 			var i = this.players.indexOf(playerID);
 			this.turn.now = this.players[Math.abs(i - 1)];
-			console.log(Math.abs(i - 1));
 			console.log(this.turn.now);
 		}
 	}, {
-		key: "connectPlayers",
-		value: function connectPlayers() {
+		key: "onPlayerConnect",
+		value: function onPlayerConnect() {
 			console.log("connect players");
 			var self = this;
 
 			this.io.on("connection", function (socket) {
-				// onNewPlayerId sets this value for other methods to use.
+				// onNewPlayerID sets this value for other methods to use.
 				socket.playerID;
 
 				// There can only be two players connected in a game,
@@ -81,24 +71,36 @@ var Battle = (function () {
 					return;
 				}
 
-				self.onNewPlayerId(socket);
+				self.onNewPlayerID(socket);
 				self.onSendMessage(socket);
 				self.onEndTurn(socket);
 				self.onDisconnect(socket);
 			});
 		}
 	}, {
-		key: "onNewPlayerId",
-		value: function onNewPlayerId(socket) {
+		key: "onNewPlayerID",
+		value: function onNewPlayerID(socket) {
 			var self = this;
 			socket.on("player id", function (id) {
 				socket.playerID = id;
 				self.players.push(id);
 				if (self.players.length == 2) {
+					// todo: create a more generic method to call all methods needed to start the battle.
 					self.establishTurnOrder();
 				}
 				self.io.emit("player count", self.players.length);
 			});
+		}
+	}, {
+		key: "establishTurnOrder",
+		value: function establishTurnOrder() {
+			if (!this.battleStarted) {
+				console.log("establish turn order");
+				this.turn = {};
+				this.turn.first = this.players[_.random(0, this.players.length - 1)];
+				this.turn.now = this.turn.first;
+				this.battleStarted = true;
+			}
 		}
 	}, {
 		key: "onSendMessage",
@@ -145,6 +147,9 @@ var Battle = (function () {
 	}, {
 		key: "emitNotYourTurn",
 		value: function emitNotYourTurn(socket) {
+			// TODO: Find out other ways to emit to specific users.
+			// might be socket.emit as per the second answer: http://stackoverflow.com/questions/4647348/send-message-to-specific-client-with-socket-io-and-node-js
+			// alternatively, if you don't have the socket object, this.io.sockets.socket(socketID).emit(message);
 			this.io.emit(socket.playerID + " not your turn");
 		}
 	}]);
